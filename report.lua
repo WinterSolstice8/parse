@@ -61,7 +61,11 @@ function report_data(stat,ability,chatmode,chattarget)
                 report_string = report_string .. (player..': ')
                 if not ability then
                     report_string = report_string .. ('{Total} ')
-                    if (stat=='ws' or stat=='ja' or stat=='enfeeb') and get_player_stat_percent(stat,player) then 
+                    if (stat=='enfeeb') and get_player_stat_percent(stat,player) then 
+                        report_string = report_string .. (get_player_stat_percent(stat,player) ..'% ')
+                    end
+                    if (stat=='ws' or stat=='ja') and get_player_stat_percent(stat,player) then 
+                        report_string = report_string .. (get_player_stat_damage(stat,player) ..' total ')
                         report_string = report_string .. (get_player_stat_percent(stat,player) ..'% ')
                     end
                     if get_player_stat_avg(stat,player) then report_string = report_string .. ('~'..get_player_stat_avg(stat,player)..'avg ') end	
@@ -70,7 +74,10 @@ function report_data(stat,ability,chatmode,chattarget)
                 for spell,spell_table in pairs(player_spell_table[player]) do
                     if not ability then report_string = report_string .. ('['..spell..'] ') end
                     if not ability or (ability and spell==ability) then
-                        if spell_table.damage then report_string = report_string .. ('~'..math.floor(spell_table.damage / spell_table.tally)..'avg ') end			
+                        if spell_table.damage then
+                            report_string = report_string .. (spell_table.damage..' total ')
+                            report_string = report_string .. ('~'..math.floor(spell_table.damage / spell_table.tally)..'avg ')
+                        end
                         report_string = report_string .. ('('..spell_table.tally..'s) ')
                     end
                 end
@@ -97,7 +104,7 @@ function report_data(stat,ability,chatmode,chattarget)
 		report_string = report_string .. '[Reporting '..stat..' stats] '..update_filters()..' | '
 		for _, player in ipairs(sorted_players) do
 			report_string = report_string .. (player..': ')
-			--report_string = report_string .. (get_player_stat_damage(stat,player)..' ')
+			if get_player_stat_damage(stat,player) then report_string = report_string .. (get_player_stat_damage(stat,player)..' total ') end
 			if get_player_stat_percent(stat,player) then report_string = report_string .. (''..get_player_stat_percent(stat,player)..'% ') end
 			if get_player_stat_avg(stat,player) then report_string = report_string .. ('~'..get_player_stat_avg(stat,player)..'avg ') end		
 			report_string = report_string .. ('('..get_player_stat_tally(stat,player)..'s)')
