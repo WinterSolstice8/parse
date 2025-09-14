@@ -41,7 +41,6 @@ function report_data(stat,ability,chatmode,chattarget)
 	elseif T{'evasion','eva'}:contains(stat) then
 		stat = 'evade'
 	end
-	
 	report_string = ""
 	sorted_players = {}
 	sorted_players = get_sorted_players(stat,20)
@@ -51,7 +50,9 @@ function report_data(stat,ability,chatmode,chattarget)
 		for _, player in ipairs(sorted_players) do
 			report_string = report_string .. (player..': '..get_player_stat_percent(stat,player)..'% ('..get_player_damage(player)..'), ')
 		end
+
 	elseif get_stat_type(stat)=='category' then		
+
         report_string = report_string .. '[Reporting '..stat..' '
         if ability then report_string = report_string .. '('..ability..') ' end
         report_string = report_string .. 'stats] '..update_filters()..' | '
@@ -68,7 +69,9 @@ function report_data(stat,ability,chatmode,chattarget)
                         report_string = report_string .. (get_player_stat_damage(stat,player) ..' total ')
                         report_string = report_string .. (get_player_stat_percent(stat,player) ..'% ')
                     end
-                    if get_player_stat_avg(stat,player) then report_string = report_string .. ('~'..get_player_stat_avg(stat,player)..'avg ') end	
+                    if get_player_stat_avg(stat,player) then
+                        report_string = report_string .. ('~'..get_player_stat_avg(stat,player)..'avg ')
+                    end
                     report_string = report_string .. ('('..get_player_stat_tally(stat,player)..'s) ')
                 end
                 for spell,spell_table in pairs(player_spell_table[player]) do
@@ -108,6 +111,11 @@ function report_data(stat,ability,chatmode,chattarget)
 			if get_player_stat_percent(stat,player) then report_string = report_string .. (''..get_player_stat_percent(stat,player)..'% ') end
 			if get_player_stat_avg(stat,player) then report_string = report_string .. ('~'..get_player_stat_avg(stat,player)..'avg ') end		
 			report_string = report_string .. ('('..get_player_stat_tally(stat,player)..'s)')
+
+			if get_player_stat_confidence_interval(stat, player) then
+				report_string = report_string .. (' ('..get_player_stat_confidence_interval(stat,player)..' ci)')
+			end
+
 			report_string = report_string .. (', ')
 		end
 	else

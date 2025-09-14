@@ -177,6 +177,19 @@ function collapse_mobs(s_type,mob_filters)
 	return player_table
 end
 
+function calculate_wald_binomial_ci(successes, trials)
+	local p_hat = successes / trials
+	local z_critical = 1.96
+
+	local standard_error = math.sqrt((p_hat * (1 - p_hat)) / trials)
+	local margin_of_error = z_critical * standard_error
+
+	local lower_bound = p_hat - margin_of_error
+	local upper_bound = p_hat + margin_of_error
+
+	return lower_bound, upper_bound
+end
+
 function get_player_spell_table(spell_type,mob_filters)
 	local player_table = nil
 	
@@ -277,6 +290,37 @@ function get_player_stat_avg(stat,plyr,mob_filters)
 	result = math.floor( (total / tally)*shift + 0.5 ) / shift
 	
 	return result
+end
+
+function get_player_stat_confidence_interval(stat, player, mob_filters)
+	local successes = get_player_stat_tally(stat, player)
+	local trials    = 0
+
+	--T{'parry', 'block', 'evade'}:contains(stat) then
+	if stat == 'parry' then
+		trials = successes + get_player_stat_tally('hit', player) + get_player_stat_tally('counter', player) + get_player_stat_tally('block', player)
+	elseif stat == 'block' then
+		trials    = successes + get_player_stat_tally('hit', player) + get_player_stat_tally('counter', player)
+	elseif stat == 'counter' then
+		trials    = successes + get_player_stat_tally('hit', player)
+	else
+		return nil
+	end
+
+	if
+		successes == 0 or
+		trials == 0
+	then
+		return nil
+	end
+
+	if trials < 20 then
+		return "?~?"
+	end
+
+	local lowerbounds, upperbounds = calculate_wald_binomial_ci(successes, trials)
+
+	return string.format("%.01f%%~%.01f%%", lowerbounds * 100, upperbounds * 100)
 end
 
 function get_player_stat_percent(stat,plyr,mob_filters)
