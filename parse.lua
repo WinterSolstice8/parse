@@ -241,6 +241,8 @@ ashita.events.register('command', 'command_cb', function (e)
 		elseif (args[2] == 'show' or args[2] == 's' or args[2] == 'display' or args[2] == 'd') then
 			toggle_box(args[3])
 			update_texts()
+		elseif args[2] == 'pause' or args[2] == 'p' then
+			pause = not pause
 		elseif args[2] == 'reset' then
 			reset_parse()
 			update_texts()
