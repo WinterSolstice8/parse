@@ -1,7 +1,15 @@
 require('common')
 addon.name = 'Parse'
 addon.author = 'Flippant (Ported to Ashita by Wintersolstice)'
-addon.version = '0.986'
+addon.version = '0.987'
+
+
+if ashita and ashita.addons_version and ashita.addons_version >= 4.3 then
+    if addon_feature and addon_feature.use_packet_chunks then
+        addon.instance:enable_feature(addon_feature.use_packet_chunks)
+    end
+end
+
 
 messageColor = 200
 
