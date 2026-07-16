@@ -296,12 +296,13 @@ function get_player_stat_confidence_interval(stat, player, mob_filters)
 	local successes = get_player_stat_tally(stat, player)
 	local trials    = 0
 
-	--T{'parry', 'block', 'evade'}:contains(stat) then
 	if stat == 'parry' then
 		trials = successes + get_player_stat_tally('hit', player) + get_player_stat_tally('counter', player) + get_player_stat_tally('block', player)
 	elseif stat == 'block' then
 		trials    = successes + get_player_stat_tally('hit', player) + get_player_stat_tally('counter', player)
 	elseif stat == 'counter' then
+		trials    = successes + get_player_stat_tally('hit', player) + get_player_stat_tally('guard', player)
+	elseif stat == 'guard' then
 		trials    = successes + get_player_stat_tally('hit', player)
 	else
 		return nil
